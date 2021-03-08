@@ -21,9 +21,7 @@ public class Server {
 
     public static void main(String[] args) throws Exception {
         ServerSocket servidor = new ServerSocket(1050);
-        System.out.println("Servidor iniciado...");
-        Conexion conex=new Conexion();
-        conex.abrirConexion();
+        System.out.println("Servidor iniciado...");        
         while (true) {
             Socket cliente = servidor.accept();
             Hilo h = new Hilo(cliente);

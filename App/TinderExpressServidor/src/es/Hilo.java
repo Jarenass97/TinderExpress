@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import javax.crypto.SealedObject;
 import object.Claves;
 import object.Escritor;
+import object.Preferencia;
 import object.Usuario;
 import seguridad.Seguridad;
 
@@ -59,26 +60,22 @@ public class Hilo extends Thread {
                 switch (op) {
                     case Constantes.REGISTRAR:
                         registrar();
-                        u = (Usuario) e.leer();
-                        conex.abrirConexion();
-                        conex.insertarUsuario(u.getEmail(), u.getNombre(), Seguridad.Hexadecimal(u.getPassResumida()), u.getFechaNac(), u.getRol());
-                        conex.cerrarConexion();
-                        e.escribir(true);
                         break;
                     case Constantes.LOGEAR:
-                        u = (Usuario) e.leer();
-                        String email = u.getEmail();
-                        String pass = Seguridad.Hexadecimal(u.getPassResumida());
-                        conex.abrirConexion();
-                        String passEnBDD = conex.obtenerValor(Constantes.TablaUsuarios, where(Constantes.usuariosEmail, "=", email), Constantes.usuariosPass);
-                        if (MessageDigest.isEqual(pass.getBytes(), passEnBDD.getBytes())) {
-                            e.escribir(true);
-                        } else {
-                            e.escribir(false);
-                        }
-                        conex.cerrarConexion();
+                        loggear();
                         break;
-
+                    case Constantes.GET_USER:
+                        getUser();
+                        break;
+                    case Constantes.SAVEPREFERENCES:
+                        savePreferences();
+                        break;
+                    case Constantes.GET_PREFERENCE:
+                        getPreference();
+                        break;
+                    case Constantes.COMPROBAR_PRIMERA:
+                        comprobarPrimera();
+                        break;
                 }
             }
             System.out.println("Cliente desconectado");
@@ -93,8 +90,12 @@ public class Hilo extends Thread {
         }
     }
 
-    private void registrar() {
-
+    private void registrar() throws Exception {
+        Usuario u = (Usuario) e.leer();
+        conex.abrirConexion();
+        conex.insertarUsuario(u.getEmail(), u.getNombre(), Seguridad.Hexadecimal(u.getPassResumida()), u.getFechaNac(), u.getRol());
+        conex.cerrarConexion();
+        e.escribir(true);
     }
 
     private void gestionClaves(Claves claves, Escritor escritor) throws Exception {
@@ -113,6 +114,56 @@ public class Hilo extends Thread {
 
     private String where(String campo, String comparador, String valor) {
         return campo + " " + comparador + " '" + valor + "'";
+    }
+
+    private void loggear() throws Exception {
+        Usuario u = (Usuario) e.leer();
+        String email = u.getEmail();
+        String pass = Seguridad.Hexadecimal(u.getPassResumida());
+        conex.abrirConexion();
+        String passEnBDD = conex.obtenerValor(Constantes.TablaUsuarios, where(Constantes.usuariosEmail, "=", email), Constantes.usuariosPass);
+        if (MessageDigest.isEqual(pass.getBytes(), passEnBDD.getBytes())) {
+            e.escribir(true);
+        } else {
+            e.escribir(false);
+        }
+        conex.cerrarConexion();
+    }
+
+    private void getUser() throws Exception {
+        String id = (String) e.leer();
+        conex.abrirConexion();
+        Usuario u = conex.getUsuario(where(Constantes.usuariosEmail, "=", id));
+        conex.cerrarConexion();
+        e.escribir(u);
+    }
+
+    private void savePreferences() throws Exception {
+        Preferencia p = (Preferencia) e.leer();
+        conex.abrirConexion();
+        if (!conex.existePreferencia(where(Constantes.preferenciasEmail, "=", p.getEmail()))) {
+            conex.insertarPreferencia(p);
+        } else {
+            conex.modPreferencia(p);
+        }
+        conex.cerrarConexion();
+        e.escribir(true);
+    }
+
+    private void getPreference() throws Exception {
+        String id = (String) e.leer();
+        conex.abrirConexion();
+        Preferencia p = conex.getPreferencia(where(Constantes.preferenciasEmail, "=", id));
+        conex.cerrarConexion();
+        e.escribir(p);
+    }
+
+    private void comprobarPrimera() throws Exception {
+        Usuario u=(Usuario) e.leer();
+        conex.abrirConexion();
+        boolean primeraVez=!conex.existePreferencia(where(Constantes.preferenciasEmail, "=", u.getEmail()));
+        conex.cerrarConexion();
+        e.escribir(primeraVez);
     }
 
 }

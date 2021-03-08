@@ -4,6 +4,7 @@ import auxiliar.Constantes;
 import java.sql.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import object.Preferencia;
 import object.Usuario;
 
 public class Conexion {
@@ -78,7 +79,7 @@ public class Conexion {
     //----------------------------------------------------------
     public int modificarDato(String tabla, String campo, String where, String Nuevo_Nombre) {
         int cod = 0;
-        String Sentencia = "UPDATE " + tabla + " SET " + campo + " = '" + Nuevo_Nombre + "' WHERE "+where;
+        String Sentencia = "UPDATE " + tabla + " SET " + campo + " = '" + Nuevo_Nombre + "' WHERE " + where;
         try {
             Sentencia_SQL.executeUpdate(Sentencia);
         } catch (SQLException ex) {
@@ -89,7 +90,7 @@ public class Conexion {
 
     //----------------------------------------------------------
     public int insertarUsuario(String email, String nombre, String passwd, String fecha_nacimiento, int rol) {
-        String Sentencia = "INSERT INTO "+Constantes.TablaUsuarios+" VALUES ('" + email + "'," + "'" + nombre + "'," + "'" + passwd + "'," + "'" + fecha_nacimiento + "'," + "'" + rol + "')";        
+        String Sentencia = "INSERT INTO " + Constantes.TablaUsuarios + " VALUES ('" + email + "'," + "'" + nombre + "'," + "'" + passwd + "'," + "'" + fecha_nacimiento + "'," + "'" + rol + "')";
         int cod = 0;
         try {
             Sentencia_SQL.executeUpdate(Sentencia);
@@ -187,8 +188,8 @@ public class Conexion {
     }
 
     //----------------------------------------------------------
-    public String obtenerValor(String tabla, String where,String campo) throws SQLException {
-        String sentencia = "SELECT * from " + tabla + " WHERE "+where;
+    public String obtenerValor(String tabla, String where, String campo) throws SQLException {
+        String sentencia = "SELECT * from " + tabla + " WHERE " + where;
         Conj_Registros = Sentencia_SQL.executeQuery(sentencia);
         if (Conj_Registros.next()) {
             return Conj_Registros.getString(campo);
@@ -206,6 +207,67 @@ public class Conexion {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error de Desconexion", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public Usuario getUsuario(String where) throws SQLException {
+        String sentencia = "SELECT * from " + Constantes.TablaUsuarios + " WHERE " + where;
+        Conj_Registros = Sentencia_SQL.executeQuery(sentencia);
+        if (Conj_Registros.next()) {
+            Usuario u = new Usuario();
+            u.setEmail(Conj_Registros.getString(Constantes.usuariosEmail));
+            u.setNombre(Conj_Registros.getString(Constantes.usuariosNombre));
+            u.setPassResumida(Conj_Registros.getBytes(Constantes.usuariosPass));
+            u.setFechaNac(Conj_Registros.getString(Constantes.usuariosFecha_Nac));
+            u.setRol(Conj_Registros.getInt(Constantes.usuariosRol));
+            return u;
+        } else {
+            return null;
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------------------------
+    public int insertarPreferencia(Preferencia p) {
+        String Sentencia = "INSERT INTO " + Constantes.TablaPreferencias + " VALUES ('" + p.getEmail() + "'," + p.isRelacionSeria() + "," + p.getDeportivos() + "," + p.getArtisticos() + "," + p.getPoliticos() + "," + p.isQuiereHijos() + ")";
+        int cod = 0;
+        try {
+            Sentencia_SQL.executeUpdate(Sentencia);
+        } catch (SQLException sq) {
+            cod = sq.getErrorCode();
+        }
+        return cod;
+    }
+
+    public boolean existePreferencia(String where) throws SQLException {
+        String sentencia = "SELECT * from " + Constantes.TablaPreferencias + " WHERE " + where;
+        Conj_Registros = Sentencia_SQL.executeQuery(sentencia);
+        if (Conj_Registros.next()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void modPreferencia(Preferencia p) {
+        borrarDato(Constantes.TablaPreferencias, (Constantes.preferenciasEmail + " = '" + p.getEmail() + "'"));
+        insertarPreferencia(p);
+    }
+
+    public Preferencia getPreferencia(String where) throws SQLException {
+        String sentencia = "SELECT * from " + Constantes.TablaPreferencias + " WHERE " + where;
+        Conj_Registros = Sentencia_SQL.executeQuery(sentencia);
+        if (Conj_Registros.next()) {
+            Preferencia p = new Preferencia();
+            p.setEmail(Conj_Registros.getString(Constantes.preferenciasEmail));
+            p.setRelacionSeria(Conj_Registros.getBoolean(Constantes.preferenciasRelacion));
+            p.setDeportivos(Conj_Registros.getInt(Constantes.preferenciasDeportivos));
+            p.setArtisticos(Conj_Registros.getInt(Constantes.preferenciasArtisticos));
+            p.setPoliticos(Conj_Registros.getInt(Constantes.preferenciasPoliticos));
+            p.setQuiereHijos(Conj_Registros.getBoolean(Constantes.preferenciasHijos));
+            return p;
+        } else {
+            return null;
+        }
+
     }
 
 }

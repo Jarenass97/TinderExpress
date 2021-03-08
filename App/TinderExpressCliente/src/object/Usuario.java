@@ -32,6 +32,9 @@ public class Usuario implements Serializable{
         this.email = email;
         this.passResumida = passResumida;
     }
+
+    public Usuario() {        
+    }
     
 
     public String getEmail() {
