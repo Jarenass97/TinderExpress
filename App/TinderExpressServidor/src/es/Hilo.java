@@ -61,7 +61,6 @@ public class Hilo extends Thread {
                         registrar();
                         u = (Usuario) e.leer();
                         conex.abrirConexion();
-                        System.out.println("Insertando..." + u.toString());
                         conex.insertarUsuario(u.getEmail(), u.getNombre(), Seguridad.Hexadecimal(u.getPassResumida()), u.getFechaNac(), u.getRol());
                         conex.cerrarConexion();
                         e.escribir(true);
@@ -72,7 +71,6 @@ public class Hilo extends Thread {
                         String pass = Seguridad.Hexadecimal(u.getPassResumida());
                         conex.abrirConexion();
                         String passEnBDD = conex.obtenerValor(Constantes.TablaUsuarios, where(Constantes.usuariosEmail, "=", email), Constantes.usuariosPass);
-                        System.out.println(pass+"  |  "+passEnBDD);
                         if (MessageDigest.isEqual(pass.getBytes(), passEnBDD.getBytes())) {
                             e.escribir(true);
                         } else {
