@@ -5,6 +5,7 @@
  */
 package object;
 
+import java.awt.Image;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -18,7 +19,7 @@ public class Usuario implements Serializable{
 
     private String email,nombre,fechaNac;    
     private byte[] passResumida;
-    private int rol;
+    private int rol;    
 
     public Usuario(String email, String nombre, String fechaNac, byte[] passResumida,int rol) {
         this.email = email;
