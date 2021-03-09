@@ -277,7 +277,7 @@ public class frmRegistro extends JFrame {
     }
 
     private void volverALogin() {
-        this.setVisible(false);
+        this.dispose();
         principal.setVisible(true);
     }
 }

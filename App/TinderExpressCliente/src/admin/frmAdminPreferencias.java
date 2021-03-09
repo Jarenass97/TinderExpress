@@ -220,7 +220,7 @@ public class frmAdminPreferencias extends javax.swing.JFrame {
             e.escribir(p);
             if ((boolean) e.leer()) {
                 JOptionPane.showMessageDialog(null, "Datos guardados.");
-                this.setVisible(false);
+                this.dispose();
                 principal.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Se ha producido un error.");
@@ -231,7 +231,7 @@ public class frmAdminPreferencias extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        this.setVisible(false);
+        this.dispose();
         principal.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
     private Preferencia getPreferencia() throws Exception {

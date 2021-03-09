@@ -129,7 +129,7 @@ public class frmCambiarPassword extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        this.setVisible(false);
+        this.dispose();
         perfil.setVisible(true);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -143,7 +143,7 @@ public class frmCambiarPassword extends javax.swing.JFrame {
                 e.escribir(Seguridad.resumir(txtPassNueva.getText()));
                 if((boolean)e.leer()){
                     JOptionPane.showMessageDialog(null, "Contraseña modificada con éxito.");
-                    this.setVisible(false);
+                    this.dispose();
                     perfil.setVisible(true);
                 }else{
                     JOptionPane.showMessageDialog(null, "Contraseña incorrecta.");

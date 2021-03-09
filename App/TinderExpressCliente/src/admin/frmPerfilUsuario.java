@@ -175,12 +175,12 @@ public class frmPerfilUsuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        this.setVisible(false);
+        this.dispose();
         principal.setVisible(true);
     }//GEN-LAST:event_formWindowClosing
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        this.setVisible(false);
+        this.dispose();
         principal.setVisible(true);
     }//GEN-LAST:event_btnVolverActionPerformed
 
@@ -199,7 +199,7 @@ public class frmPerfilUsuario extends javax.swing.JFrame {
                 usuario.setFechaNac(txtFechaNac.getText());
                 e.escribir(usuario);
                 JOptionPane.showMessageDialog(null, "Perfil actualizado exitosamente");
-                this.setVisible(false);
+                this.dispose();
                 principal.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Los campos no pueden estar vacíos");
