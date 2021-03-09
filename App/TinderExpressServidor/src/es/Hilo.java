@@ -76,6 +76,12 @@ public class Hilo extends Thread {
                     case Constantes.COMPROBAR_PRIMERA:
                         comprobarPrimera();
                         break;
+                    case Constantes.CAMBIAR_PASSWORD:
+                        cambiarPassword();
+                        break;
+                    case Constantes.MODIFICAR_PERFIL:
+                        modPerfil();
+                        break;
                 }
             }
             System.out.println("Cliente desconectado");
@@ -159,11 +165,36 @@ public class Hilo extends Thread {
     }
 
     private void comprobarPrimera() throws Exception {
-        Usuario u=(Usuario) e.leer();
+        Usuario u = (Usuario) e.leer();
         conex.abrirConexion();
-        boolean primeraVez=!conex.existePreferencia(where(Constantes.preferenciasEmail, "=", u.getEmail()));
+        boolean primeraVez = !conex.existePreferencia(where(Constantes.preferenciasEmail, "=", u.getEmail()));
         conex.cerrarConexion();
         e.escribir(primeraVez);
+    }
+
+    private void cambiarPassword() throws Exception {
+        Usuario u = (Usuario) e.leer();
+        String passActual=Seguridad.Hexadecimal((byte[]) e.leer());
+        String nuevaPass = Seguridad.Hexadecimal((byte[]) e.leer());
+        conex.abrirConexion();
+        String passEnBDD = conex.obtenerValor(Constantes.TablaUsuarios, where(Constantes.usuariosEmail, "=", u.getEmail()), Constantes.usuariosPass);
+        if (MessageDigest.isEqual(passActual.getBytes(), passEnBDD.getBytes())) {
+            conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosPass, where(Constantes.usuariosEmail,"=",u.getEmail()), nuevaPass);
+            e.escribir(true);
+        } else {
+            e.escribir(false);
+        }
+        conex.cerrarConexion();
+    }
+
+    private void modPerfil() throws Exception {        
+        Usuario u=(Usuario) e.leer();
+        String email=u.getEmail();
+        conex.abrirConexion();        
+        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosNombre, where(Constantes.usuariosEmail,"=",email), u.getNombre());
+        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosFecha_Nac, where(Constantes.usuariosEmail,"=",email), u.getFechaNac());
+        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosEmail, where(Constantes.usuariosEmail,"=",email), u.getEmail());
+        conex.cerrarConexion();
     }
 
 }

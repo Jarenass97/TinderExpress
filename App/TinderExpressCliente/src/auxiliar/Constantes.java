@@ -15,6 +15,8 @@ public class Constantes {
     public static final int SAVEPREFERENCES=3;
     public static final int GET_PREFERENCE=4;
     public static final int COMPROBAR_PRIMERA=5;
+    public static final int CAMBIAR_PASSWORD=6;
+    public static final int MODIFICAR_PERFIL=7;
     
     
     //--------------- valores ----------------------

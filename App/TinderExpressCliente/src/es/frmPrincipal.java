@@ -5,7 +5,7 @@
  */
 package es;
 
-import admin.frmAdminPreferencias;
+import admin.*;
 import auxiliar.Constantes;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -51,6 +51,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         btnPreferencias = new javax.swing.JButton();
         lblNombreUsuario = new javax.swing.JLabel();
+        btnPerfil = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tinder Express");
@@ -72,18 +73,26 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         lblNombreUsuario.setText("Nombre");
 
+        btnPerfil.setText("Administrar Perfil");
+        btnPerfil.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPerfilActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnPreferencias)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(36, 36, 36)
-                        .addComponent(lblNombreUsuario)))
-                .addContainerGap(267, Short.MAX_VALUE))
+                        .addComponent(lblNombreUsuario))
+                    .addComponent(btnPerfil, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnPreferencias, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(264, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,7 +101,9 @@ public class frmPrincipal extends javax.swing.JFrame {
                 .addComponent(lblNombreUsuario)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnPreferencias)
-                .addContainerGap(158, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnPerfil)
+                .addContainerGap(120, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -129,8 +140,15 @@ public class frmPrincipal extends javax.swing.JFrame {
             Logger.getLogger(frmPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowOpened
+
+    private void btnPerfilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerfilActionPerformed
+        frmPerfilUsuario frm= new frmPerfilUsuario(usuario, e, servidor, this);
+        frm.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnPerfilActionPerformed
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnPerfil;
     private javax.swing.JButton btnPreferencias;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lblNombreUsuario;
