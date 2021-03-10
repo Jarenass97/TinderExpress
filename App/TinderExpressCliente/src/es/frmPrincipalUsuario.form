@@ -88,6 +88,8 @@
                               <Group type="102" attributes="0">
                                   <Component id="btnRefresh" min="-2" pref="108" max="-2" attributes="0"/>
                                   <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="btnVerMsgs" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="btnEnviarMsg" min="-2" pref="136" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -122,6 +124,7 @@
                       <Component id="btnAddAmigos" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnRefresh" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnEnviarMsg" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnVerMsgs" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="lblCerrar" min="-2" max="-2" attributes="0"/>
@@ -235,6 +238,14 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEnviarMsgActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnVerMsgs">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Ver mis mensajes"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVerMsgsActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

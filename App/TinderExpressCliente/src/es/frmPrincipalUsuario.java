@@ -64,6 +64,7 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
         btnAddAmigos = new javax.swing.JButton();
         btnRefresh = new javax.swing.JButton();
         btnEnviarMsg = new javax.swing.JButton();
+        btnVerMsgs = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tinder Express");
@@ -2159,6 +2160,13 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
             }
         });
 
+        btnVerMsgs.setText("Ver mis mensajes");
+        btnVerMsgs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerMsgsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -2195,6 +2203,8 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnVerMsgs)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnEnviarMsg, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())))
         );
@@ -2219,7 +2229,8 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAddAmigos)
                     .addComponent(btnRefresh)
-                    .addComponent(btnEnviarMsg))
+                    .addComponent(btnEnviarMsg)
+                    .addComponent(btnVerMsgs))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblCerrar)
                 .addGap(19, 19, 19))
@@ -2312,7 +2323,7 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
                 e.escribir(Constantes.ENVIAR_MENSAJE);
                 Mensaje msg = new Mensaje(usuario.getEmail(), emailReceptor, contenido);
                 e.escribir(msg);
-                JOptionPane.showConfirmDialog(null, "Mensaje enviado.");
+                JOptionPane.showMessageDialog(null, "Mensaje enviado.");
             }else if (contenido.isEmpty()){
                 JOptionPane.showConfirmDialog(null, "No pueden enviarse mensajes vacios");
             }
@@ -2329,8 +2340,13 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
         } else {
             btnEnviarMsg.setEnabled(false);
         }
-
     }//GEN-LAST:event_tblUsuariosMouseClicked
+
+    private void btnVerMsgsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerMsgsActionPerformed
+        frmVerMensajes frm = new frmVerMensajes(usuario, e, this);
+        this.setVisible(false);
+        frm.setVisible(true);        
+    }//GEN-LAST:event_btnVerMsgsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddAmigos;
@@ -2338,6 +2354,7 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
     private javax.swing.JButton btnPerfil;
     private javax.swing.JButton btnPreferencias;
     private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnVerMsgs;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

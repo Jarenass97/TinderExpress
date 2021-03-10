@@ -93,6 +93,13 @@ public class Hilo extends Thread {
                         break;
                     case Constantes.ENVIAR_MENSAJE:
                         enviarMensaje();
+                        break;
+                    case Constantes.CARGAR_MENSAJES:
+                        cargarMensajes();
+                        break;
+                    case Constantes.LEER_MENSAJE:
+                        leerMensaje();
+                        break;
                 }
             }
             System.out.println("Cliente desconectado");
@@ -316,6 +323,24 @@ public class Hilo extends Thread {
         Mensaje msg = (Mensaje) e.leer();
         conex.abrirConexion();
         conex.insertaMensaje(msg);
+        conex.cerrarConexion();
+    }
+
+    private void cargarMensajes() throws Exception {
+        conex.abrirConexion();
+        ArrayList<Mensaje> mensajes = conex.getListaMensajes(conectado);
+        for (Mensaje msg : mensajes) {
+            e.escribir(true);
+            e.escribir(msg);
+        }
+        e.escribir(false);
+        conex.cerrarConexion();
+    }   
+
+    private void leerMensaje() throws Exception {
+        Mensaje msg=(Mensaje) e.leer();
+        conex.abrirConexion();
+        conex.leerMensaje(msg);
         conex.cerrarConexion();
     }
 

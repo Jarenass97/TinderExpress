@@ -316,8 +316,7 @@ public class Conexion {
     }
 
     public SolicitudAmistad getSolicitud(String emailA, String emailB) throws SQLException {
-        String sentencia = "SELECT * from " + Constantes.TablaAmigos + " WHERE " + Constantes.amigosEmailA+" = '"+emailB+"' AND "+ Constantes.amigosEmailB+" = '"+emailA+"'";
-        System.out.println(sentencia);
+        String sentencia = "SELECT * from " + Constantes.TablaAmigos + " WHERE " + Constantes.amigosEmailA+" = '"+emailB+"' AND "+ Constantes.amigosEmailB+" = '"+emailA+"'";        
         ResultSet solicitudes = Sentencia_SQL.executeQuery(sentencia);
         if (solicitudes.next()) {
             SolicitudAmistad sa = new SolicitudAmistad();
@@ -332,8 +331,7 @@ public class Conexion {
 
     public int creaMatch(String emailA, String emailB) {
         int cod = 0;
-        String Sentencia = "UPDATE " + Constantes.TablaAmigos + " SET " + Constantes.TablaAmigos+"."+Constantes.amigosMatch + " = 1 WHERE " + Constantes.amigosEmailA+" = '"+emailA+"' AND "+ Constantes.amigosEmailB+" = '"+emailB+"'";
-        System.out.println(Sentencia);
+        String Sentencia = "UPDATE " + Constantes.TablaAmigos + " SET " + Constantes.TablaAmigos+"."+Constantes.amigosMatch + " = 1 WHERE " + Constantes.amigosEmailA+" = '"+emailA+"' AND "+ Constantes.amigosEmailB+" = '"+emailB+"'";        
         try {
             Sentencia_SQL.executeUpdate(Sentencia);
         } catch (SQLException ex) {
@@ -344,8 +342,7 @@ public class Conexion {
 
     public ArrayList<Usuario> getListaAmigos(Usuario conectado) throws SQLException {
         ArrayList<Usuario> ListaUsuarios=new ArrayList<>();
-        String sentencia = "SELECT * FROM "+Constantes.TablaUsuarios+" WHERE "+Constantes.usuariosEmail+" IN (SELECT "+Constantes.amigosEmailB+" from " + Constantes.TablaUsuarios + " JOIN "+Constantes.TablaAmigos+" ON "+Constantes.usuariosEmail+" = "+Constantes.amigosEmailA+" WHERE "+Constantes.TablaAmigos+"."+Constantes.amigosMatch+" = 1 AND "+Constantes.amigosEmailA+" = '"+conectado.getEmail()+"') AND "+Constantes.usuariosEmail+" != '"+conectado.getEmail()+"'";
-        System.out.println(sentencia);
+        String sentencia = "SELECT * FROM "+Constantes.TablaUsuarios+" WHERE "+Constantes.usuariosEmail+" IN (SELECT "+Constantes.amigosEmailB+" from " + Constantes.TablaUsuarios + " JOIN "+Constantes.TablaAmigos+" ON "+Constantes.usuariosEmail+" = "+Constantes.amigosEmailA+" WHERE "+Constantes.TablaAmigos+"."+Constantes.amigosMatch+" = 1 AND "+Constantes.amigosEmailA+" = '"+conectado.getEmail()+"') AND "+Constantes.usuariosEmail+" != '"+conectado.getEmail()+"'";        
         ResultSet solicitados = Sentencia_SQL.executeQuery(sentencia);
         while (solicitados.next()) {
             Usuario u = new Usuario();
@@ -360,12 +357,38 @@ public class Conexion {
     }   
     
     public int insertaMensaje(Mensaje msg) {
-        String Sentencia = "INSERT INTO " + Constantes.TablaMensajes + " VALUES ('" + msg.getTransmisor()+ "','" + msg.getReceptor() + "','" + msg.getContenido() + "')";        
+        String Sentencia = "INSERT INTO " + Constantes.TablaMensajes + " VALUES ('" + msg.getTransmisor()+ "','" + msg.getReceptor() + "','" + msg.getContenido() + "',0)";        
         int cod = 0;
         try {
             Sentencia_SQL.executeUpdate(Sentencia);
         } catch (SQLException sq) {
             cod = sq.getErrorCode();
+        }
+        return cod;
+    }
+
+    public ArrayList<Mensaje> getListaMensajes(Usuario conectado) throws SQLException {
+        ArrayList<Mensaje> ListaMensajes=new ArrayList<>();
+        String sentencia = "SELECT * FROM "+Constantes.TablaMensajes+" WHERE "+Constantes.mensajesReceptor+" = '"+conectado.getEmail()+"' AND "+Constantes.mensajesLeido+" = 0";        
+        ResultSet solicitados = Sentencia_SQL.executeQuery(sentencia);
+        while (solicitados.next()) {
+            Mensaje msg = new Mensaje();
+            msg.setTransmisor(solicitados.getString(Constantes.mensajesTransmisor));
+            msg.setReceptor(solicitados.getString(Constantes.mensajesReceptor));
+            msg.setContenido(solicitados.getString(Constantes.mensajesContenido));            
+            ListaMensajes.add(msg);
+        }        
+        return ListaMensajes;
+    }
+
+    public int leerMensaje(Mensaje msg) {
+        int cod = 0;
+        String Sentencia = "UPDATE " + Constantes.TablaMensajes + " SET " + Constantes.mensajesLeido+" = 1 WHERE " + Constantes.mensajesTransmisor+" = '"+msg.getTransmisor()+"' AND "+ Constantes.mensajesReceptor+" = '"+msg.getReceptor()+"' AND "+Constantes.mensajesContenido+" = '"+msg.getContenido()+"'";
+        System.out.println(Sentencia);
+        try {
+            Sentencia_SQL.executeUpdate(Sentencia);
+        } catch (SQLException ex) {
+            cod = ex.getErrorCode();
         }
         return cod;
     }
