@@ -59,6 +59,7 @@ public class frmPrincipal extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         lblCerrar = new javax.swing.JLabel();
+        btnAddAmigos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tinder Express");
@@ -116,10 +117,20 @@ public class frmPrincipal extends javax.swing.JFrame {
 
         jLabel2.setText("Mis Amigos");
 
+        lblCerrar.setFont(new java.awt.Font("Calibri", 1, 12)); // NOI18N
+        lblCerrar.setForeground(new java.awt.Color(0, 51, 255));
         lblCerrar.setText("Cerrar sesión");
+        lblCerrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 lblCerrarMouseClicked(evt);
+            }
+        });
+
+        btnAddAmigos.setText("Añadir amigos");
+        btnAddAmigos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddAmigosActionPerformed(evt);
             }
         });
 
@@ -142,8 +153,11 @@ public class frmPrincipal extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(lblCerrar)
-                        .addGap(55, 55, 55)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAddAmigos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(lblCerrar)
+                                .addGap(39, 39, 39)))))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -165,9 +179,11 @@ public class frmPrincipal extends javax.swing.JFrame {
                 .addComponent(btnPreferencias)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnPerfil)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAddAmigos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblCerrar)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGap(19, 19, 19))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
@@ -184,7 +200,9 @@ public class frmPrincipal extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -220,14 +238,21 @@ public class frmPrincipal extends javax.swing.JFrame {
     private void lblCerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCerrarMouseClicked
         try {
             frmLogin frm=new frmLogin();
-            this.dispose();
+            this.setVisible(false);
             frm.setVisible(true);
         } catch (Exception ex) {
             Logger.getLogger(frmPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_lblCerrarMouseClicked
+
+    private void btnAddAmigosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAmigosActionPerformed
+        frmAddAmigos frm = new frmAddAmigos(usuario, e, servidor, this);
+        this.setVisible(false);
+        frm.setVisible(true);
+    }//GEN-LAST:event_btnAddAmigosActionPerformed
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddAmigos;
     private javax.swing.JButton btnPerfil;
     private javax.swing.JButton btnPreferencias;
     private javax.swing.JLabel jLabel1;

@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import object.Preferencia;
+import object.SolicitudAmistad;
 import object.Usuario;
 
 public class Conexion {
@@ -52,7 +53,7 @@ public class Conexion {
     }
 
     //----------------------------------------------------------
-    private void mostrarFilaActual() {
+    public void mostrarFilaActual() {
         int i, Num_Cols;
         try {
             Num_Cols = Conj_Registros.getMetaData().getColumnCount();
@@ -140,7 +141,7 @@ public class Conexion {
         String valor = "";
         try {
             valor = Conj_Registros.getString(Campo);
-        } catch (SQLException ex) {
+        } catch (SQLException ex) {            
         }
         return valor;
     }
@@ -149,7 +150,7 @@ public class Conexion {
     public boolean irSiguiente() {
         boolean conseguido = false;
         try {
-            conseguido = Conj_Registros.next();
+            conseguido = Conj_Registros.next();            
         } catch (SQLException ex) {
         }
         return conseguido;
@@ -210,15 +211,15 @@ public class Conexion {
     }
 
     public Usuario getUsuario(String where) throws SQLException {
-        String sentencia = "SELECT * from " + Constantes.TablaUsuarios + " WHERE " + where;
-        Conj_Registros = Sentencia_SQL.executeQuery(sentencia);
-        if (Conj_Registros.next()) {
+        String sentencia = "SELECT * from " + Constantes.TablaUsuarios + " WHERE " + where;        
+        ResultSet usuarios = Sentencia_SQL.executeQuery(sentencia);
+        if (usuarios.next()) {
             Usuario u = new Usuario();
-            u.setEmail(Conj_Registros.getString(Constantes.usuariosEmail));
-            u.setNombre(Conj_Registros.getString(Constantes.usuariosNombre));
-            u.setPassResumida(Conj_Registros.getBytes(Constantes.usuariosPass));
-            u.setFechaNac(Conj_Registros.getString(Constantes.usuariosFecha_Nac));
-            u.setRol(Conj_Registros.getInt(Constantes.usuariosRol));
+            u.setEmail(usuarios.getString(Constantes.usuariosEmail));
+            u.setNombre(usuarios.getString(Constantes.usuariosNombre));
+            u.setPassResumida(usuarios.getBytes(Constantes.usuariosPass));
+            u.setFechaNac(usuarios.getString(Constantes.usuariosFecha_Nac));
+            u.setRol(usuarios.getInt(Constantes.usuariosRol));
             return u;
         } else {
             return null;
@@ -253,21 +254,50 @@ public class Conexion {
     }
 
     public Preferencia getPreferencia(String where) throws SQLException {
-        String sentencia = "SELECT * from " + Constantes.TablaPreferencias + " WHERE " + where;
-        Conj_Registros = Sentencia_SQL.executeQuery(sentencia);
-        if (Conj_Registros.next()) {
+        String sentencia = "SELECT * from " + Constantes.TablaPreferencias + " WHERE " + where;        
+        ResultSet preferencias = Sentencia_SQL.executeQuery(sentencia);
+        if (preferencias.next()) {
             Preferencia p = new Preferencia();
-            p.setEmail(Conj_Registros.getString(Constantes.preferenciasEmail));
-            p.setRelacionSeria(Conj_Registros.getBoolean(Constantes.preferenciasRelacion));
-            p.setDeportivos(Conj_Registros.getInt(Constantes.preferenciasDeportivos));
-            p.setArtisticos(Conj_Registros.getInt(Constantes.preferenciasArtisticos));
-            p.setPoliticos(Conj_Registros.getInt(Constantes.preferenciasPoliticos));
-            p.setQuiereHijos(Conj_Registros.getBoolean(Constantes.preferenciasHijos));
+            p.setEmail(preferencias.getString(Constantes.preferenciasEmail));
+            p.setRelacionSeria(preferencias.getBoolean(Constantes.preferenciasRelacion));
+            p.setDeportivos(preferencias.getInt(Constantes.preferenciasDeportivos));
+            p.setArtisticos(preferencias.getInt(Constantes.preferenciasArtisticos));
+            p.setPoliticos(preferencias.getInt(Constantes.preferenciasPoliticos));
+            p.setQuiereHijos(preferencias.getBoolean(Constantes.preferenciasHijos));
             return p;
         } else {
             return null;
         }
 
     }
+
+    public ArrayList<Usuario> listaUsuarios(Usuario conectado) throws SQLException {
+        ArrayList<Usuario> ListaUsuarios=new ArrayList<>();
+        String sentencia = "SELECT * from " + Constantes.TablaUsuarios + " WHERE "+Constantes.usuariosEmail+" != '"+conectado.getEmail()+"'";        
+        ResultSet usuarios = Sentencia_SQL.executeQuery(sentencia);
+        while (usuarios.next()) {
+            Usuario u = new Usuario();
+            u.setEmail(usuarios.getString(Constantes.usuariosEmail));
+            u.setNombre(usuarios.getString(Constantes.usuariosNombre));
+            u.setPassResumida(usuarios.getBytes(Constantes.usuariosPass));
+            u.setFechaNac(usuarios.getString(Constantes.usuariosFecha_Nac));
+            u.setRol(usuarios.getInt(Constantes.usuariosRol));
+            ListaUsuarios.add(u);
+        }
+        return ListaUsuarios;
+    }
+
+    public int insertaSolicitudAmistad(SolicitudAmistad solicitud_amistad) {        
+        String Sentencia = "INSERT INTO " + Constantes.TablaAmigos + " VALUES ('" + solicitud_amistad.getEmailA()+ "','" + solicitud_amistad.getEmailB() + "'," + solicitud_amistad.isMatch() + ")";
+        System.out.println(Sentencia);
+        int cod = 0;
+        try {
+            Sentencia_SQL.executeUpdate(Sentencia);
+        } catch (SQLException sq) {
+            cod = sq.getErrorCode();
+        }
+        return cod;
+    }
+    
 
 }

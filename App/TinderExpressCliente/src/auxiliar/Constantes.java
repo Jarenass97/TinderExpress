@@ -17,6 +17,8 @@ public class Constantes {
     public static final int COMPROBAR_PRIMERA=5;
     public static final int CAMBIAR_PASSWORD=6;
     public static final int MODIFICAR_PERFIL=7;
+    public static final int CARGAR_AFINES=8;
+    public static final int SOLICITAR_AMISTAD=9;
     
     
     //--------------- valores ----------------------

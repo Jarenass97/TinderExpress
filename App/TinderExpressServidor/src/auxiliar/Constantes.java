@@ -17,6 +17,8 @@ public class Constantes {
     public static final int COMPROBAR_PRIMERA=5;
     public static final int CAMBIAR_PASSWORD=6;
     public static final int MODIFICAR_PERFIL=7;
+    public static final int CARGAR_AFINES=8;
+    public static final int SOLICITAR_AMISTAD=9;
     
     //--------------- BASE DE DATOS ----------------------
     public static final String bbdd = "tinderpsp";
@@ -39,6 +41,12 @@ public class Constantes {
     public static final String preferenciasArtisticos = "artisticos"; 
     public static final String preferenciasPoliticos = "politicos"; 
     public static final String preferenciasHijos = "quiere_hijos"; 
+    
+    //--------------- TABLA AMIGOS ----------------------
+    public static final String TablaAmigos = "amigos"; 
+    public static final String amigosEmailA = "email1"; 
+    public static final String amigosEmailB = "email2"; 
+    public static final String amigosMatch = "match"; 
     
     //--------------- TABLA ROLES ----------------------
     public static final String TablaRoles = "roles";

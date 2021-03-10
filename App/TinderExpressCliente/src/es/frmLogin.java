@@ -159,7 +159,7 @@ public class frmLogin extends javax.swing.JFrame {
         try {
             e.escribir(true);
             e.escribir(Constantes.LOGEAR);
-            String email = txtEmail.getText();
+            String email = txtEmail.getText().toLowerCase();
             String pass = txtPassword.getText();
             Usuario u = new Usuario(email, Seguridad.resumir(pass));
             e.escribir(u);

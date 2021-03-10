@@ -19,13 +19,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.SealedObject;
-import object.Claves;
-import object.Escritor;
-import object.Preferencia;
-import object.Usuario;
+import object.*;
 import seguridad.Seguridad;
 
 /**
@@ -81,6 +79,12 @@ public class Hilo extends Thread {
                         break;
                     case Constantes.MODIFICAR_PERFIL:
                         modPerfil();
+                        break;
+                    case Constantes.CARGAR_AFINES:
+                        cargarAfines();
+                        break;
+                    case Constantes.SOLICITAR_AMISTAD:
+                        solicitarAmistad();
                         break;
                 }
             }
@@ -174,12 +178,12 @@ public class Hilo extends Thread {
 
     private void cambiarPassword() throws Exception {
         Usuario u = (Usuario) e.leer();
-        String passActual=Seguridad.Hexadecimal((byte[]) e.leer());
+        String passActual = Seguridad.Hexadecimal((byte[]) e.leer());
         String nuevaPass = Seguridad.Hexadecimal((byte[]) e.leer());
         conex.abrirConexion();
         String passEnBDD = conex.obtenerValor(Constantes.TablaUsuarios, where(Constantes.usuariosEmail, "=", u.getEmail()), Constantes.usuariosPass);
         if (MessageDigest.isEqual(passActual.getBytes(), passEnBDD.getBytes())) {
-            conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosPass, where(Constantes.usuariosEmail,"=",u.getEmail()), nuevaPass);
+            conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosPass, where(Constantes.usuariosEmail, "=", u.getEmail()), nuevaPass);
             e.escribir(true);
         } else {
             e.escribir(false);
@@ -187,13 +191,103 @@ public class Hilo extends Thread {
         conex.cerrarConexion();
     }
 
-    private void modPerfil() throws Exception {        
-        Usuario u=(Usuario) e.leer();
-        String email=u.getEmail();
-        conex.abrirConexion();        
-        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosNombre, where(Constantes.usuariosEmail,"=",email), u.getNombre());
-        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosFecha_Nac, where(Constantes.usuariosEmail,"=",email), u.getFechaNac());
-        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosEmail, where(Constantes.usuariosEmail,"=",email), u.getEmail());
+    private void modPerfil() throws Exception {
+        Usuario u = (Usuario) e.leer();
+        String email = u.getEmail();
+        conex.abrirConexion();
+        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosNombre, where(Constantes.usuariosEmail, "=", email), u.getNombre());
+        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosFecha_Nac, where(Constantes.usuariosEmail, "=", email), u.getFechaNac());
+        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosEmail, where(Constantes.usuariosEmail, "=", email), u.getEmail());
+        conex.cerrarConexion();
+    }
+
+    private void cargarAfines() throws Exception {
+        Usuario conectado = (Usuario) e.leer();
+        conex.abrirConexion();
+        Preferencia pConectado = conex.getPreferencia(where(Constantes.preferenciasEmail, "=", conectado.getEmail()));
+        conex.obtenerDatosTabla(Constantes.TablaUsuarios);
+        ArrayList<Usuario> usuarios = conex.listaUsuarios(conectado);
+        ArrayList<Usuario> enviados = new ArrayList<>();
+        for (Usuario u : usuarios) {
+            Preferencia p = conex.getPreferencia(where(Constantes.preferenciasEmail, "=", u.getEmail()));
+            if (p != null) {
+                if (muyPreferente(pConectado, p)) {
+                    e.escribir(true);
+                    e.escribir(u);
+                    enviados.add(u);
+                }
+            }
+        }
+        for (Usuario u : usuarios) {
+            if (!userSend(u, enviados)) {
+                Preferencia p = conex.getPreferencia(where(Constantes.preferenciasEmail, "=", u.getEmail()));
+                if (p != null) {
+                    if (Preferente(pConectado, p)) {
+                        e.escribir(true);
+                        e.escribir(u);
+                        enviados.add(u);
+                    }
+                }
+            }
+        }
+        for (Usuario u : usuarios) {
+            if (!userSend(u, enviados)) {
+                Preferencia p = conex.getPreferencia(where(Constantes.preferenciasEmail, "=", u.getEmail()));
+                e.escribir(true);
+                e.escribir(u);
+                enviados.add(u);
+            }
+        }
+        e.escribir(false);
+        conex.cerrarConexion();
+    }
+
+    private boolean muyPreferente(Preferencia pref_conectado, Preferencia pref_amigo) {
+        boolean pref = false;
+        if (pref_conectado.isRelacionSeria() == pref_amigo.isRelacionSeria() && pref_conectado.isQuiereHijos() == pref_amigo.isQuiereHijos()) {
+            if (gustosAfines(pref_conectado, pref_amigo, 10)) {
+                pref = true;
+            }
+        }
+        System.out.println(pref);
+        return pref;
+    }
+
+    private boolean gustosAfines(Preferencia pref_conectado, Preferencia pref_amigo, int diferencia) {
+        int gustoDepConec = pref_conectado.getDeportivos();
+        int gustoArtConec = pref_conectado.getArtisticos();
+        int gustoPolConec = pref_conectado.getPoliticos();
+        return (pref_amigo.getDeportivos() <= gustoDepConec + diferencia && pref_amigo.getDeportivos() >= gustoDepConec - diferencia)
+                || (pref_amigo.getArtisticos() <= gustoArtConec + diferencia && pref_amigo.getArtisticos() >= gustoArtConec - diferencia)
+                || (pref_amigo.getPoliticos() <= gustoPolConec + diferencia && pref_amigo.getPoliticos() >= gustoPolConec - diferencia);
+    }
+
+    private boolean userSend(Usuario u, ArrayList<Usuario> enviados) {
+        boolean encontrado = false;
+        for (int i = 0; i < enviados.size() && !encontrado; i++) {
+            if (u.getEmail().equals(enviados.get(i).getEmail())) {
+                encontrado = true;
+            }
+        }
+        return encontrado;
+
+    }
+
+    private boolean Preferente(Preferencia pref_conectado, Preferencia pref_amigo) {
+        boolean pref = false;
+        if (pref_conectado.isRelacionSeria() == pref_amigo.isRelacionSeria() && pref_conectado.isQuiereHijos() == pref_amigo.isQuiereHijos()) {
+            if (gustosAfines(pref_conectado, pref_amigo, 25)) {
+                pref = true;
+            }
+        }
+        System.out.println(pref);
+        return pref;
+    }
+
+    private void solicitarAmistad() throws Exception {
+        SolicitudAmistad sa =  (SolicitudAmistad) e.leer();        
+        conex.abrirConexion();
+        conex.insertaSolicitudAmistad(sa);
         conex.cerrarConexion();
     }
 
