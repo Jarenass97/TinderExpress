@@ -194,7 +194,7 @@ public class frmLogin extends javax.swing.JFrame {
 
     private void lblRegistrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegistrarMouseClicked
         try {
-            frmRegistro registro = new frmRegistro(this, servidor, e, ALGORITHMO, claves);
+            frmRegistro registro = new frmRegistro(this, servidor, e);
             this.setVisible(false);
             registro.setVisible(true);
         } catch (Exception ex) {

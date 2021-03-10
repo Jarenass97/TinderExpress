@@ -27,16 +27,12 @@ public class frmRegistro extends JFrame {
      * Creates new form frmRegistrarCliente
      */
     private JFrame principal;
-    private Socket servidor;
-    private String algoritmo;
-    private Escritor e;
-    private Claves claves;
+    private Socket servidor;   
+    private Escritor e;    
 
-    public frmRegistro(JFrame principal, Socket servidor, Escritor escritor, String algoritmo, Claves claves) throws IOException {
+    public frmRegistro(JFrame principal, Socket servidor, Escritor escritor) throws IOException {
         this.principal = principal;
-        this.servidor = servidor;
-        this.algoritmo = algoritmo;
-        this.claves = claves;
+        this.servidor = servidor;                
         this.e = escritor;
         initComponents();
         this.setIconImage(new ImageIcon(getClass().getResource("/resources/logo.png")).getImage());

@@ -26,6 +26,7 @@ public class Constantes {
     public static final int CARGAR_USUARIOS=14;
     public static final int DAR_PERMISOS=15;
     public static final int QUITAR_PERMISOS=16;
+    public static final int DEL_USER=17;
     
     //--------------- BASE DE DATOS ----------------------
     public static final String bbdd = "tinderpsp";
