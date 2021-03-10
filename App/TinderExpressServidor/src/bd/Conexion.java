@@ -315,7 +315,8 @@ public class Conexion {
     }
 
     public SolicitudAmistad getSolicitud(String emailA, String emailB) throws SQLException {
-        String sentencia = "SELECT * from " + Constantes.TablaAmigos + " WHERE " + Constantes.amigosEmailA+" = '"+emailB+"' AND "+ Constantes.amigosEmailA+" = '"+emailB+"'";
+        String sentencia = "SELECT * from " + Constantes.TablaAmigos + " WHERE " + Constantes.amigosEmailA+" = '"+emailB+"' AND "+ Constantes.amigosEmailB+" = '"+emailA+"'";
+        System.out.println(sentencia);
         ResultSet solicitudes = Sentencia_SQL.executeQuery(sentencia);
         if (solicitudes.next()) {
             SolicitudAmistad sa = new SolicitudAmistad();
@@ -338,6 +339,23 @@ public class Conexion {
             cod = ex.getErrorCode();
         }
         return cod;
+    }
+
+    public ArrayList<Usuario> getListaAmigos(Usuario conectado) throws SQLException {
+        ArrayList<Usuario> ListaUsuarios=new ArrayList<>();
+        String sentencia = "SELECT * FROM "+Constantes.TablaUsuarios+" WHERE "+Constantes.usuariosEmail+" IN (SELECT "+Constantes.amigosEmailB+" from " + Constantes.TablaUsuarios + " JOIN "+Constantes.TablaAmigos+" ON "+Constantes.usuariosEmail+" = "+Constantes.amigosEmailA+" WHERE "+Constantes.TablaAmigos+"."+Constantes.amigosMatch+" = 1 AND "+Constantes.amigosEmailA+" = '"+conectado.getEmail()+"') AND "+Constantes.usuariosEmail+" != '"+conectado.getEmail()+"'";
+        System.out.println(sentencia);
+        ResultSet solicitados = Sentencia_SQL.executeQuery(sentencia);
+        while (solicitados.next()) {
+            Usuario u = new Usuario();
+            u.setEmail(solicitados.getString(Constantes.usuariosEmail));
+            u.setNombre(solicitados.getString(Constantes.usuariosNombre));
+            u.setPassResumida(solicitados.getBytes(Constantes.usuariosPass));
+            u.setFechaNac(solicitados.getString(Constantes.usuariosFecha_Nac));
+            u.setRol(solicitados.getInt(Constantes.usuariosRol));
+            ListaUsuarios.add(u);
+        }        
+        return ListaUsuarios;
     }
 
 }

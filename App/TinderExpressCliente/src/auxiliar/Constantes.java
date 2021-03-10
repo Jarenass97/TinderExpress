@@ -19,6 +19,7 @@ public class Constantes {
     public static final int MODIFICAR_PERFIL=7;
     public static final int CARGAR_AFINES=8;
     public static final int SOLICITAR_AMISTAD=9;
+    public static final int CARGAR_AMIGOS=10;
     
     
     //--------------- valores ----------------------

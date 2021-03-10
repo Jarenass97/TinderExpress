@@ -19,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,6 +87,9 @@ public class Hilo extends Thread {
                         break;
                     case Constantes.SOLICITAR_AMISTAD:
                         solicitarAmistad();
+                        break;
+                    case Constantes.CARGAR_AMIGOS:
+                        cargarAmigos();
                         break;
                 }
             }
@@ -286,11 +290,23 @@ public class Hilo extends Thread {
         if (sa2 != null) {
             e.escribir(true);
             sa.setMatch(true);
+            System.out.println(sa2.getEmailA()+" "+sa2.getEmailB());
             conex.creaMatch(sa2.getEmailA(),sa2.getEmailB());                    
         } else {
             e.escribir(false);
         }
         conex.insertaSolicitudAmistad(sa);
+        conex.cerrarConexion();
+    }
+
+    private void cargarAmigos() throws SQLException, Exception {
+        conex.abrirConexion();
+        ArrayList<Usuario> amigos=conex.getListaAmigos(conectado);
+        for (Usuario amigo : amigos) {
+            e.escribir(true);
+            e.escribir(amigo);
+        }
+        e.escribir(false);
         conex.cerrarConexion();
     }
     

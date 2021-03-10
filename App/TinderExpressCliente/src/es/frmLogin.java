@@ -165,7 +165,7 @@ public class frmLogin extends javax.swing.JFrame {
             e.escribir(u);
             if ((boolean) e.leer()) {
                 JOptionPane.showMessageDialog(null, "Ha iniciado sesión con exito", "INFO", JOptionPane.INFORMATION_MESSAGE);
-                frmPrincipal frm=new frmPrincipal(email, e, claves,servidor);
+                frmPrincipalUsuario frm=new frmPrincipalUsuario(email, e, claves,servidor);
                 frm.setVisible(true);
                 this.setVisible(false);                
             } else {

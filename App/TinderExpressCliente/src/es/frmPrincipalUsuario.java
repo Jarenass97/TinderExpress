@@ -5,48 +5,40 @@
  */
 package es;
 
+import admin.*;
 import auxiliar.Constantes;
+import java.awt.Label;
 import java.net.Socket;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import object.Escritor;
-import object.SolicitudAmistad;
-import object.Usuario;
+import javax.swing.JLabel;
+import object.*;
 
 /**
  *
  * @author jorge
  */
-public class frmAddAmigos extends javax.swing.JFrame {
+public class frmPrincipalUsuario extends javax.swing.JFrame {
 
     /**
-     * Creates new form frmAddAmigos
+     * Creates new form frmPrincipal
      */
-    private Usuario usuario;
-    private Escritor e;
     private Socket servidor;
-    private JFrame principal;
-    private ArrayList<Usuario> afines = new ArrayList<>();
-
-    public frmAddAmigos(Usuario usuario, Escritor escritor, Socket servidor, JFrame principal) {
+    private Usuario usuario;    
+    private Escritor e;
+    private Claves c;
+    
+    public frmPrincipalUsuario(String email,Escritor escritor,Claves claves,Socket servidor) throws Exception {
         initComponents();
-        this.setIconImage(new ImageIcon(getClass().getResource("/resources/logo.png")).getImage());
+        this.setIconImage(new ImageIcon(getClass().getResource("/resources/logo.png")).getImage());        
+        this.e=escritor;
+        this.c=claves;
         setLocationRelativeTo(null);
-        this.usuario = usuario;
-        this.e = escritor;
-        this.servidor = servidor;
-        this.principal = principal;
+        this.usuario=getUsuario(email);        
+        lblNombreUsuario.setText(usuario.getNombre());
+        this.servidor=servidor;   
+        cargarDatos();        
     }
 
     /**
@@ -58,14 +50,19 @@ public class frmAddAmigos extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        btnPreferencias = new javax.swing.JButton();
+        lblNombreUsuario = new javax.swing.JLabel();
+        btnPerfil = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblUsuarios = new javax.swing.JTable();
-        btnAgregar = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        lblCerrar = new javax.swing.JLabel();
+        btnAddAmigos = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tinder Express");
-        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -75,8 +72,28 @@ public class frmAddAmigos extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Usuarios disponibles ordenados segun tus preferencias");
+        btnPreferencias.setText("Mis Preferencias");
+        btnPreferencias.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreferenciasActionPerformed(evt);
+            }
+        });
 
+        lblNombreUsuario.setFont(new java.awt.Font("Calibri", 1, 14)); // NOI18N
+        lblNombreUsuario.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblNombreUsuario.setText("Nombre");
+        lblNombreUsuario.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        btnPerfil.setText("Administrar Perfil");
+        btnPerfil.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPerfilActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/señor.png"))); // NOI18N
+
+        tblUsuarios.setFont(new java.awt.Font("Calibri", 0, 12)); // NOI18N
         tblUsuarios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
@@ -2092,121 +2109,203 @@ public class frmAddAmigos extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tblUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblUsuariosMouseClicked(evt);
-            }
-        });
         jScrollPane1.setViewportView(tblUsuarios);
 
-        btnAgregar.setText("Agregar");
-        btnAgregar.setEnabled(false);
-        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarActionPerformed(evt);
+        jLabel2.setText("Mis Amigos");
+
+        lblCerrar.setFont(new java.awt.Font("Calibri", 1, 12)); // NOI18N
+        lblCerrar.setForeground(new java.awt.Color(0, 51, 255));
+        lblCerrar.setText("Cerrar sesión");
+        lblCerrar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCerrarMouseClicked(evt);
             }
         });
+
+        btnAddAmigos.setText("Añadir amigos");
+        btnAddAmigos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddAmigosActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnPreferencias, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(lblNombreUsuario))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAddAmigos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(lblCerrar)
+                                .addGap(39, 39, 39)))))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(191, 191, 191))))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblNombreUsuario)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPreferencias)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPerfil))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAddAmigos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblCerrar)
+                .addGap(19, 19, 19))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(248, 248, 248))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(133, 133, 133))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(btnAgregar)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        cargarTabla();
-    }//GEN-LAST:event_formWindowOpened
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        principal.setVisible(true);
-        this.dispose();
+        try {
+            e.escribir(false);
+            servidor.close();
+        } catch (Exception ex) {
+            Logger.getLogger(frmLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_formWindowClosing
 
-    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+    private void btnPreferenciasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreferenciasActionPerformed
+        abrirAdministradorPreferencias();
+    }//GEN-LAST:event_btnPreferenciasActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-            e.escribir(true);
-            e.escribir(Constantes.SOLICITAR_AMISTAD);
-            DefaultTableModel tm = (DefaultTableModel) tblUsuarios.getModel();
-            String email = String.valueOf(tm.getValueAt(tblUsuarios.getSelectedRow(), 1));            
-            SolicitudAmistad sa = new SolicitudAmistad(usuario.getEmail(), email);
-            e.escribir(sa);            
-            //cargarTabla();
-            JOptionPane.showMessageDialog(null, "Solicitud enviada.");            
-            if((boolean)e.leer()){
-                JOptionPane.showMessageDialog(null, "Se ha creado un match, ENHORABUENA!.");            
-            }
+            cargarAmigos();
+            if(isPrimeraVez())this.setVisible(false);            
         } catch (Exception ex) {
-            Logger.getLogger(frmAddAmigos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(frmPrincipalUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }//GEN-LAST:event_formWindowOpened
 
-    }//GEN-LAST:event_btnAgregarActionPerformed
+    private void btnPerfilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerfilActionPerformed
+        frmPerfilUsuario frm= new frmPerfilUsuario(usuario, e, servidor, this);
+        frm.setVisible(true);
+        this.setVisible(false);
+    }//GEN-LAST:event_btnPerfilActionPerformed
 
-    private void tblUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsuariosMouseClicked
-        DefaultTableModel tm = (DefaultTableModel) tblUsuarios.getModel();
-        String fila = String.valueOf(tm.getValueAt(tblUsuarios.getSelectedRow(), 0));
-        if (!fila.equals("null")) {
-            btnAgregar.setEnabled(true);
-        } else {
-            btnAgregar.setEnabled(false);
+    private void lblCerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCerrarMouseClicked
+        try {
+            frmLogin frm=new frmLogin();
+            this.setVisible(false);
+            frm.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(frmPrincipalUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_tblUsuariosMouseClicked
+    }//GEN-LAST:event_lblCerrarMouseClicked
 
-
+    private void btnAddAmigosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddAmigosActionPerformed
+        frmAddAmigos frm = new frmAddAmigos(usuario, e, servidor, this);
+        this.setVisible(false);
+        frm.setVisible(true);
+    }//GEN-LAST:event_btnAddAmigosActionPerformed
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregar;
+    private javax.swing.JButton btnAddAmigos;
+    private javax.swing.JButton btnPerfil;
+    private javax.swing.JButton btnPreferencias;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblCerrar;
+    private javax.swing.JLabel lblNombreUsuario;
     private javax.swing.JTable tblUsuarios;
     // End of variables declaration//GEN-END:variables
 
-    private void addUser(Usuario usuario, int fila) throws ParseException {
+    private Usuario getUsuario(String email) throws Exception {
+        e.escribir(true);
+        e.escribir(Constantes.GET_USER);
+        e.escribir(email);
+        Usuario u=(Usuario) e.leer();
+        return u;
+    }
+
+    private void cargarDatos() throws Exception {
+        if(isPrimeraVez()){
+            abrirAdministradorPreferencias();
+        }                
+    }
+
+    private boolean isPrimeraVez() throws Exception {
+        e.escribir(true);
+        e.escribir(Constantes.COMPROBAR_PRIMERA);        
+        return (boolean) e.leer();
+    }
+
+    private void abrirAdministradorPreferencias() {
+        try {
+            frmAdminPreferencias frm=new frmAdminPreferencias(usuario, e, c, servidor,this);
+            frm.setVisible(true);
+            this.setVisible(false);
+        } catch (Exception ex) {
+            Logger.getLogger(frmPrincipalUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void cargarAmigos() throws Exception {
+        e.escribir(true);
+        e.escribir(Constantes.CARGAR_AMIGOS);
+        int fila=0;
+        while((boolean)e.leer()){
+            Usuario u=(Usuario) e.leer();
+            addUser(u, fila);                
+            fila++;
+        }
+    }
+
+    private void addUser(Usuario usuario, int fila) {
         tblUsuarios.setValueAt(usuario.getNombre(), fila, 0);
         tblUsuarios.setValueAt(usuario.getEmail(), fila, 1);
         tblUsuarios.setValueAt(usuario.getFechaNac(), fila, 2);
     }
-
-    private void cargarTabla() {
-        try {
-            e.escribir(true);
-            e.escribir(Constantes.CARGAR_AFINES);            
-            int fila = 0;
-            tblUsuarios.removeAll();
-            afines.clear();
-            while ((boolean) e.leer()) {
-                Usuario u = (Usuario) e.leer();
-                addUser(u, fila);
-                afines.add(u);
-                fila++;
-            }            
-        } catch (Exception ex) {
-            Logger.getLogger(frmAddAmigos.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
+   
 }
