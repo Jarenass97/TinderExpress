@@ -22,6 +22,9 @@ public class SolicitudAmistad implements Serializable {
         this.match = false;
     }
 
+    public SolicitudAmistad() {
+    }
+
     public String getEmailA() {
         return emailA;
     }

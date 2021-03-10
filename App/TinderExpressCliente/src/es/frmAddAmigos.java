@@ -2140,20 +2140,7 @@ public class frmAddAmigos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        try {
-            e.escribir(true);
-            e.escribir(Constantes.CARGAR_AFINES);
-            e.escribir(usuario);
-            int fila = 0;
-            while ((boolean) e.leer()) {
-                Usuario u = (Usuario) e.leer();
-                addUser(u, fila);
-                afines.add(u);
-                fila++;
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(frmAddAmigos.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        cargarTabla();
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -2168,8 +2155,12 @@ public class frmAddAmigos extends javax.swing.JFrame {
             DefaultTableModel tm = (DefaultTableModel) tblUsuarios.getModel();
             String email = String.valueOf(tm.getValueAt(tblUsuarios.getSelectedRow(), 1));
             SolicitudAmistad sa = new SolicitudAmistad(usuario.getEmail(), email);
-            e.escribir(sa);
-            JOptionPane.showMessageDialog(null, "Solicitud enviada.");
+            e.escribir(sa);            
+            //cargarTabla();
+            JOptionPane.showMessageDialog(null, "Solicitud enviada.");            
+            if((boolean)e.leer()){
+                JOptionPane.showMessageDialog(null, "Se ha creado un match, ENHORABUENA!.");            
+            }
         } catch (Exception ex) {
             Logger.getLogger(frmAddAmigos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2178,10 +2169,10 @@ public class frmAddAmigos extends javax.swing.JFrame {
 
     private void tblUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsuariosMouseClicked
         DefaultTableModel tm = (DefaultTableModel) tblUsuarios.getModel();
-        String fila = String.valueOf(tm.getValueAt(tblUsuarios.getSelectedRow(), 0));        
+        String fila = String.valueOf(tm.getValueAt(tblUsuarios.getSelectedRow(), 0));
         if (!fila.equals("null")) {
             btnAgregar.setEnabled(true);
-        }else{
+        } else {
             btnAgregar.setEnabled(false);
         }
     }//GEN-LAST:event_tblUsuariosMouseClicked
@@ -2198,6 +2189,24 @@ public class frmAddAmigos extends javax.swing.JFrame {
         tblUsuarios.setValueAt(usuario.getNombre(), fila, 0);
         tblUsuarios.setValueAt(usuario.getEmail(), fila, 1);
         tblUsuarios.setValueAt(usuario.getFechaNac(), fila, 2);
+    }
+
+    private void cargarTabla() {
+        try {
+            e.escribir(true);
+            e.escribir(Constantes.CARGAR_AFINES);            
+            int fila = 0;
+            tblUsuarios.removeAll();
+            afines.clear();
+            while ((boolean) e.leer()) {
+                Usuario u = (Usuario) e.leer();
+                addUser(u, fila);
+                afines.add(u);
+                fila++;
+            }            
+        } catch (Exception ex) {
+            Logger.getLogger(frmAddAmigos.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

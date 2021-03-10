@@ -137,8 +137,7 @@ public class frmCambiarPassword extends javax.swing.JFrame {
         try {
             e.escribir(true);
             e.escribir(Constantes.CAMBIAR_PASSWORD);
-            if (txtPassNueva.getText().equals(txtPassNueva2.getText())) {
-                e.escribir(usuario);
+            if (txtPassNueva.getText().equals(txtPassNueva2.getText())) {                
                 e.escribir(Seguridad.resumir(txtPassActual.getText()));
                 e.escribir(Seguridad.resumir(txtPassNueva.getText()));
                 if((boolean)e.leer()){

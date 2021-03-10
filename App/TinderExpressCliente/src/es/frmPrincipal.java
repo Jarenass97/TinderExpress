@@ -280,8 +280,7 @@ public class frmPrincipal extends javax.swing.JFrame {
 
     private boolean isPrimeraVez() throws Exception {
         e.escribir(true);
-        e.escribir(Constantes.COMPROBAR_PRIMERA);
-        e.escribir(usuario);
+        e.escribir(Constantes.COMPROBAR_PRIMERA);        
         return (boolean) e.leer();
     }
 

@@ -236,8 +236,7 @@ public class frmAdminPreferencias extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVolverActionPerformed
     private Preferencia getPreferencia() throws Exception {
         e.escribir(true);
-        e.escribir(Constantes.GET_PREFERENCE);
-        e.escribir(usuario.getEmail());
+        e.escribir(Constantes.GET_PREFERENCE);        
         Preferencia p = (Preferencia) e.leer();
         return p;
     }
