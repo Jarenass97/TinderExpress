@@ -4,6 +4,7 @@ import auxiliar.Constantes;
 import java.sql.*;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import object.Mensaje;
 import object.Preferencia;
 import object.SolicitudAmistad;
 import object.Usuario;
@@ -356,6 +357,17 @@ public class Conexion {
             ListaUsuarios.add(u);
         }        
         return ListaUsuarios;
+    }   
+    
+    public int insertaMensaje(Mensaje msg) {
+        String Sentencia = "INSERT INTO " + Constantes.TablaMensajes + " VALUES ('" + msg.getTransmisor()+ "','" + msg.getReceptor() + "','" + msg.getContenido() + "')";        
+        int cod = 0;
+        try {
+            Sentencia_SQL.executeUpdate(Sentencia);
+        } catch (SQLException sq) {
+            cod = sq.getErrorCode();
+        }
+        return cod;
     }
 
 }

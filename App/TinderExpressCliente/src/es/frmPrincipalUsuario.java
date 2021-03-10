@@ -13,6 +13,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import object.*;
 
 /**
@@ -25,20 +27,20 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
      * Creates new form frmPrincipal
      */
     private Socket servidor;
-    private Usuario usuario;    
+    private Usuario usuario;
     private Escritor e;
     private Claves c;
-    
-    public frmPrincipalUsuario(String email,Escritor escritor,Claves claves,Socket servidor) throws Exception {
+
+    public frmPrincipalUsuario(String email, Escritor escritor, Claves claves, Socket servidor) throws Exception {
         initComponents();
-        this.setIconImage(new ImageIcon(getClass().getResource("/resources/logo.png")).getImage());        
-        this.e=escritor;
-        this.c=claves;
+        this.setIconImage(new ImageIcon(getClass().getResource("/resources/logo.png")).getImage());
+        this.e = escritor;
+        this.c = claves;
         setLocationRelativeTo(null);
-        this.usuario=getUsuario(email);        
+        this.usuario = getUsuario(email);
         lblNombreUsuario.setText(usuario.getNombre());
-        this.servidor=servidor;   
-        cargarDatos();        
+        this.servidor = servidor;
+        cargarDatos();
     }
 
     /**
@@ -60,9 +62,16 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         lblCerrar = new javax.swing.JLabel();
         btnAddAmigos = new javax.swing.JButton();
+        btnRefresh = new javax.swing.JButton();
+        btnEnviarMsg = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Tinder Express");
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -2109,6 +2118,11 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblUsuarios.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblUsuariosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblUsuarios);
 
         jLabel2.setText("Mis Amigos");
@@ -2127,6 +2141,21 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
         btnAddAmigos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddAmigosActionPerformed(evt);
+            }
+        });
+
+        btnRefresh.setText("Refrescar");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
+        btnEnviarMsg.setText("Enviar Mensaje");
+        btnEnviarMsg.setEnabled(false);
+        btnEnviarMsg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnviarMsgActionPerformed(evt);
             }
         });
 
@@ -2155,14 +2184,19 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
                                 .addComponent(lblCerrar)
                                 .addGap(39, 39, 39)))))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 203, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(191, 191, 191))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(191, 191, 191))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnEnviarMsg, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2182,7 +2216,10 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAddAmigos)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAddAmigos)
+                    .addComponent(btnRefresh)
+                    .addComponent(btnEnviarMsg))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblCerrar)
                 .addGap(19, 19, 19))
@@ -2219,22 +2256,23 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-            cargarAmigos();
-            if(isPrimeraVez())this.setVisible(false);            
+            if (isPrimeraVez()) {
+                this.setVisible(false);
+            }
         } catch (Exception ex) {
             Logger.getLogger(frmPrincipalUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_formWindowOpened
 
     private void btnPerfilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPerfilActionPerformed
-        frmPerfilUsuario frm= new frmPerfilUsuario(usuario, e, servidor, this);
+        frmPerfilUsuario frm = new frmPerfilUsuario(usuario, e, servidor, this);
         frm.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnPerfilActionPerformed
 
     private void lblCerrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCerrarMouseClicked
         try {
-            frmLogin frm=new frmLogin();
+            frmLogin frm = new frmLogin();
             this.setVisible(false);
             frm.setVisible(true);
         } catch (Exception ex) {
@@ -2247,11 +2285,59 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
         this.setVisible(false);
         frm.setVisible(true);
     }//GEN-LAST:event_btnAddAmigosActionPerformed
-   
+
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        try {
+            cargarAmigos();
+        } catch (Exception ex) {
+            Logger.getLogger(frmPrincipalUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        try {
+            cargarAmigos();
+        } catch (Exception ex) {
+            Logger.getLogger(frmPrincipalUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formComponentShown
+
+    private void btnEnviarMsgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarMsgActionPerformed
+        try {
+            DefaultTableModel tm = (DefaultTableModel) tblUsuarios.getModel();
+            String emailReceptor = String.valueOf(tm.getValueAt(tblUsuarios.getSelectedRow(), 1));
+            String contenido = JOptionPane.showInputDialog("Mensaje para " + emailReceptor);
+            if (contenido != null && !contenido.isEmpty()) {
+                e.escribir(true);
+                e.escribir(Constantes.ENVIAR_MENSAJE);
+                Mensaje msg = new Mensaje(usuario.getEmail(), emailReceptor, contenido);
+                e.escribir(msg);
+                JOptionPane.showConfirmDialog(null, "Mensaje enviado.");
+            }else if (contenido.isEmpty()){
+                JOptionPane.showConfirmDialog(null, "No pueden enviarse mensajes vacios");
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(frmPrincipalUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnEnviarMsgActionPerformed
+
+    private void tblUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsuariosMouseClicked
+        DefaultTableModel tm = (DefaultTableModel) tblUsuarios.getModel();
+        String fila = String.valueOf(tm.getValueAt(tblUsuarios.getSelectedRow(), 0));
+        if (!fila.equals("null")) {
+            btnEnviarMsg.setEnabled(true);
+        } else {
+            btnEnviarMsg.setEnabled(false);
+        }
+
+    }//GEN-LAST:event_tblUsuariosMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddAmigos;
+    private javax.swing.JButton btnEnviarMsg;
     private javax.swing.JButton btnPerfil;
     private javax.swing.JButton btnPreferencias;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -2265,25 +2351,25 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
         e.escribir(true);
         e.escribir(Constantes.GET_USER);
         e.escribir(email);
-        Usuario u=(Usuario) e.leer();
+        Usuario u = (Usuario) e.leer();
         return u;
     }
 
     private void cargarDatos() throws Exception {
-        if(isPrimeraVez()){
+        if (isPrimeraVez()) {
             abrirAdministradorPreferencias();
-        }                
+        }
     }
 
     private boolean isPrimeraVez() throws Exception {
         e.escribir(true);
-        e.escribir(Constantes.COMPROBAR_PRIMERA);        
+        e.escribir(Constantes.COMPROBAR_PRIMERA);
         return (boolean) e.leer();
     }
 
     private void abrirAdministradorPreferencias() {
         try {
-            frmAdminPreferencias frm=new frmAdminPreferencias(usuario, e, c, servidor,this);
+            frmAdminPreferencias frm = new frmAdminPreferencias(usuario, e, c, servidor, this);
             frm.setVisible(true);
             this.setVisible(false);
         } catch (Exception ex) {
@@ -2294,10 +2380,10 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
     private void cargarAmigos() throws Exception {
         e.escribir(true);
         e.escribir(Constantes.CARGAR_AMIGOS);
-        int fila=0;
-        while((boolean)e.leer()){
-            Usuario u=(Usuario) e.leer();
-            addUser(u, fila);                
+        int fila = 0;
+        while ((boolean) e.leer()) {
+            Usuario u = (Usuario) e.leer();
+            addUser(u, fila);
             fila++;
         }
     }
@@ -2307,5 +2393,5 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
         tblUsuarios.setValueAt(usuario.getEmail(), fila, 1);
         tblUsuarios.setValueAt(usuario.getFechaNac(), fila, 2);
     }
-   
+
 }

@@ -20,6 +20,7 @@ public class Constantes {
     public static final int CARGAR_AFINES=8;
     public static final int SOLICITAR_AMISTAD=9;
     public static final int CARGAR_AMIGOS=10;
+    public static final int ENVIAR_MENSAJE=11;
     
     //--------------- BASE DE DATOS ----------------------
     public static final String bbdd = "tinderpsp";
@@ -48,6 +49,12 @@ public class Constantes {
     public static final String amigosEmailA = "email1"; 
     public static final String amigosEmailB = "email2"; 
     public static final String amigosMatch = "match"; 
+    
+     //--------------- TABLA MENSAJES ----------------------
+    public static final String TablaMensajes = "mensajes"; 
+    public static final String mensajesTransmisor = "email_transmisor"; 
+    public static final String mensajesReceptor = "email_receptor"; 
+    public static final String mensajesContenido = "contenido"; 
     
     //--------------- TABLA ROLES ----------------------
     public static final String TablaRoles = "roles";
