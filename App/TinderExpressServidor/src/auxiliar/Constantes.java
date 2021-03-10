@@ -23,6 +23,9 @@ public class Constantes {
     public static final int ENVIAR_MENSAJE=11;
     public static final int CARGAR_MENSAJES=12;
     public static final int LEER_MENSAJE=13;
+    public static final int CARGAR_USUARIOS=14;
+    public static final int DAR_PERMISOS=15;
+    public static final int QUITAR_PERMISOS=16;
     
     //--------------- BASE DE DATOS ----------------------
     public static final String bbdd = "tinderpsp";

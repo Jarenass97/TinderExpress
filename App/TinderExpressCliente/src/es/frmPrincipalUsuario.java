@@ -5,7 +5,8 @@
  */
 package es;
 
-import admin.*;
+import administración.frmPerfilUsuario;
+import administración.frmAdminPreferencias;
 import auxiliar.Constantes;
 import java.awt.Label;
 import java.net.Socket;
@@ -31,13 +32,13 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
     private Escritor e;
     private Claves c;
 
-    public frmPrincipalUsuario(String email, Escritor escritor, Claves claves, Socket servidor) throws Exception {
+    public frmPrincipalUsuario(Usuario usuario, Escritor escritor, Claves claves, Socket servidor) throws Exception {
         initComponents();
         this.setIconImage(new ImageIcon(getClass().getResource("/resources/logo.png")).getImage());
         this.e = escritor;
         this.c = claves;
         setLocationRelativeTo(null);
-        this.usuario = getUsuario(email);
+        this.usuario = usuario;
         lblNombreUsuario.setText(usuario.getNombre());
         this.servidor = servidor;
         cargarDatos();
@@ -2363,14 +2364,7 @@ public class frmPrincipalUsuario extends javax.swing.JFrame {
     private javax.swing.JLabel lblNombreUsuario;
     private javax.swing.JTable tblUsuarios;
     // End of variables declaration//GEN-END:variables
-
-    private Usuario getUsuario(String email) throws Exception {
-        e.escribir(true);
-        e.escribir(Constantes.GET_USER);
-        e.escribir(email);
-        Usuario u = (Usuario) e.leer();
-        return u;
-    }
+    
 
     private void cargarDatos() throws Exception {
         if (isPrimeraVez()) {

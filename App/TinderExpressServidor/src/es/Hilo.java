@@ -100,6 +100,15 @@ public class Hilo extends Thread {
                     case Constantes.LEER_MENSAJE:
                         leerMensaje();
                         break;
+                    case Constantes.CARGAR_USUARIOS:
+                        cargarUsers();
+                        break;
+                    case Constantes.QUITAR_PERMISOS:
+                        cambiarPermisos(false);
+                        break;
+                    case Constantes.DAR_PERMISOS:
+                        cambiarPermisos(true);
+                        break;
                 }
             }
             System.out.println("Cliente desconectado");
@@ -335,12 +344,36 @@ public class Hilo extends Thread {
         }
         e.escribir(false);
         conex.cerrarConexion();
-    }   
+    }
 
     private void leerMensaje() throws Exception {
-        Mensaje msg=(Mensaje) e.leer();
+        Mensaje msg = (Mensaje) e.leer();
         conex.abrirConexion();
         conex.leerMensaje(msg);
+        conex.cerrarConexion();
+    }
+
+    private void cargarUsers() throws Exception {
+        conex.abrirConexion();
+        ArrayList<Usuario> usuarios = conex.listaUsuarios(conectado);
+        for (Usuario u : usuarios) {
+            e.escribir(true);
+            e.escribir(u);
+        }
+        e.escribir(false);
+        conex.cerrarConexion();
+    }
+
+    private void cambiarPermisos(boolean dar) throws Exception {
+        conex.abrirConexion();
+        String email=(String) e.leer();
+        String rol="";
+        if(dar){
+            rol="1";
+        }else{
+            rol="2";
+        }
+        conex.modificarDato(Constantes.TablaUsuarios, Constantes.usuariosRol, where(Constantes.usuariosEmail,"=",email), rol);
         conex.cerrarConexion();
     }
 

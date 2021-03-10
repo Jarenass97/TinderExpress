@@ -47,7 +47,7 @@ public class frmLogin extends javax.swing.JFrame {
         Escritor e = new Escritor(servidor, claves);
         gestionClaves(claves, e);
         this.claves = claves;
-        this.e = e;        
+        this.e = e;
     }
 
     /**
@@ -164,10 +164,17 @@ public class frmLogin extends javax.swing.JFrame {
             Usuario u = new Usuario(email, Seguridad.resumir(pass));
             e.escribir(u);
             if ((boolean) e.leer()) {
+                u = getUser(email);
                 JOptionPane.showMessageDialog(null, "Ha iniciado sesión con exito", "INFO", JOptionPane.INFORMATION_MESSAGE);
-                frmPrincipalUsuario frm=new frmPrincipalUsuario(email, e, claves,servidor);
-                frm.setVisible(true);
-                this.setVisible(false);                
+                if (isAdmin(u)) {
+                    frmPrincipalAdministrador frm = new frmPrincipalAdministrador(u, e, servidor);
+                    frm.setVisible(true);
+                    this.setVisible(false);
+                } else {
+                    frmPrincipalUsuario frm = new frmPrincipalUsuario(u, e, claves, servidor);
+                    frm.setVisible(true);
+                    this.setVisible(false);
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "Usuario o contraseña erroneos", "ERROR", JOptionPane.WARNING_MESSAGE);
             }
@@ -265,6 +272,18 @@ public class frmLogin extends javax.swing.JFrame {
         escritor.oos().writeObject(claves.getPublica());
         //Recibimos la clave del otro extremo
         claves.setOtroExtremo((PublicKey) escritor.ois().readObject());
+    }
+
+    private boolean isAdmin(Usuario u) throws Exception {
+        return u.getRol() == 1;
+    }
+
+    private Usuario getUser(String email) throws Exception {
+        e.escribir(true);
+        e.escribir(Constantes.GET_USER);
+        e.escribir(email);
+        Usuario u = (Usuario) e.leer();
+        return u;
     }
 
 }
